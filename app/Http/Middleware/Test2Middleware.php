@@ -6,12 +6,11 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class TestMiddleware
+class Test2Middleware
 {
   public function handle(Request $request, Closure $next): Response
   {
-    if ($request->boolean('admin'))
-      echo 'olá admin!';
+    dd('caiu no segundo middleware');
 
     return $next($request);
   }

@@ -51,6 +51,61 @@ return Application::configure(basePath: dirname(__DIR__))
 
 ```
 
+
+***Como registrar middleware por rota***
+
+Nos arquivos de rotas definimos um middleware usando `->middleware ou ::middleware`
+
+```php
+<?php
+
+use Illuminate\Support\Facades\Route;
+
+use App\Http\Middleware\TestMiddleware;
+
+Route::get('/', function () {
+  return view('welcome');
+})->middleware(TestMiddleware::class);
+
+```
+
+Podemos adicionar mais de um middleware, no parametro de `->middleware()` podemos passar um array de middleware. A ordem dos middlewares importa porque eles são execudados na ordem em que são especificados. O que é responsável por direcionar para o próximo middleware está dentro do método handle de cada middleware `$next($request)` direciona para o próximo enviando o que está no seu parametro
+
+```php
+<?php
+
+use Illuminate\Support\Facades\Route;
+
+use App\Http\Middleware\TestMiddleware;
+use App\Http\Middleware\TestMiddleware2;
+
+// Nesse exemplo primeiramente vai ser executado o Middleware e depois o middleware2
+
+Route::get('/', function () {
+  return view('welcome');
+})->middleware([TestMiddleware::class, TestMiddleware2::class]);
+
+```
+
+***Como remover um middleware***
+
+Para remover um middleware basta adicionar `->withoutMiddleware() ou ::withoutMiddleware(), seu parametro pode ser um middleware ou um array de middleware`
+
+```php
+<?php
+
+use App\Http\Middleware\Test2Middleware;
+use App\Http\Middleware\TestMiddleware;
+use Illuminate\Support\Facades\Route;
+
+Route::middleware([TestMiddleware::class, Test2Middleware::class])->group(function () {
+  Route::get('/', function () {
+    return view('welcome');
+  })->withoutMiddleware([Test2Middleware::class]);
+});
+
+```
+
 ## Comandos artisan
 
 | Comando | O que faz | Pasta |
