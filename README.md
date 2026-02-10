@@ -144,7 +144,70 @@ return Application::configure(basePath: dirname(__DIR__))
 
 Para definir um nome `aliases` em string para ser chamado ao invés de passar a classe basta usar o método `->alias()`, ele recebe um array onde o index é o nome e o valor é o Middleware
 
+```php
+<?php
 
+use Illuminate\Foundation\Application;
+use Illuminate\Foundation\Configuration\Exceptions;
+use Illuminate\Foundation\Configuration\Middleware;
+
+// MIDDLEWARES
+use App\Http\Middleware\Test2Middleware;
+use App\Http\Middleware\TestMiddleware;
+
+return Application::configure(basePath: dirname(__DIR__))
+  ->withRouting(
+    web: __DIR__ . '/../routes/web.php',
+    commands: __DIR__ . '/../routes/console.php',
+    health: '/up',
+  )
+  ->withMiddleware(function (Middleware $middleware): void {
+    $middleware->alias([
+      'test' => TestMiddleware::class,
+      'test2' => Test2Middleware::class
+    ]);
+  })
+  ->withExceptions(function (Exceptions $exceptions): void {
+    //
+  })->create();
+
+```
+
+***Como definir middlewares globais para camadas de rotas***
+
+Para definir middlewares globais para camadas de rotas podemos usar, rotas web `->web()` ou para rotas api `->api()`, o primeiro parâmetro são os primeiros middlewares e é um array de middlewares que vão ser adicionados no final da pilha, o segundo parametro são os middlewares que vão para o começo a pilha, ou seja vão ser executados depois dos middlewares do primeiro parametro, porque na pilha, os últimos são os primeiros a sair
+
+```php
+<?php
+
+use Illuminate\Foundation\Application;
+use Illuminate\Foundation\Configuration\Exceptions;
+use Illuminate\Foundation\Configuration\Middleware;
+
+// MIDDLEWARES
+use App\Http\Middleware\Test2Middleware;
+use App\Http\Middleware\TestMiddleware;
+
+return Application::configure(basePath: dirname(__DIR__))
+  ->withRouting(
+    web: __DIR__ . '/../routes/web.php',
+    commands: __DIR__ . '/../routes/console.php',
+    health: '/up',
+  )
+  ->withMiddleware(function (Middleware $middleware): void {
+    $middleware->web(
+      [
+        TestMiddleware::class
+      ],
+      [
+        Test2Middleware::class
+      ]
+    );
+  })
+  ->withExceptions(function (Exceptions $exceptions): void {
+    //
+  })->create();
+```
 
 ## Comandos artisan
 

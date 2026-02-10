@@ -15,10 +15,14 @@ return Application::configure(basePath: dirname(__DIR__))
     health: '/up',
   )
   ->withMiddleware(function (Middleware $middleware): void {
-    $middleware->alias([
-      'middleware'  => TestMiddleware::class,
-      'middleware2' => Test2Middleware::class
-    ]);
+    $middleware->web(
+      [
+        TestMiddleware::class
+      ],
+      [
+        Test2Middleware::class
+      ]
+    );
   })
   ->withExceptions(function (Exceptions $exceptions): void {
     //
