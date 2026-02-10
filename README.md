@@ -106,6 +106,46 @@ Route::middleware([TestMiddleware::class, Test2Middleware::class])->group(functi
 
 ```
 
+***Como criar grupos de middlewares***
+
+Para criar um grupo de middlewares e definir um nome para eles, basta regitrar dentro de `bootstrap/app.php` usando `->$middleware->appendToGroup()` o primeiro parâmetro é o nome do grupo `aliases` e o segundo é o array de classe dos middlewares
+
+```php
+<?php
+
+use Illuminate\Foundation\Application;
+use Illuminate\Foundation\Configuration\Exceptions;
+use Illuminate\Foundation\Configuration\Middleware;
+
+// MIDDLEWARE
+use App\Http\Middleware\Test2Middleware;
+use App\Http\Middleware\TestMiddleware;
+
+return Application::configure(basePath: dirname(__DIR__))
+  ->withRouting(
+    web: __DIR__ . '/../routes/web.php',
+    commands: __DIR__ . '/../routes/console.php',
+    health: '/up',
+  )
+  ->withMiddleware(function (Middleware $middleware): void {
+    // Dentro de middleware defina os grupos de middleware com ->appendToGroup()
+    $middleware->appendToGroup('test', [
+      TestMiddleware::class,
+      Test2Middleware::class
+    ]);
+  })
+  ->withExceptions(function (Exceptions $exceptions): void {
+    //
+  })->create();
+
+```
+
+***Definindo nomes para middlewares***
+
+Para definir um nome `aliases` em string para ser chamado ao invés de passar a classe basta usar o método `->alias()`, ele recebe um array onde o index é o nome e o valor é o Middleware
+
+
+
 ## Comandos artisan
 
 | Comando | O que faz | Pasta |
