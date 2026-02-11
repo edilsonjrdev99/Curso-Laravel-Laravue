@@ -8,5 +8,8 @@ use Illuminate\Support\Facades\Route;
 Route::group([], function () {
   Route::get('/', [UserController::class, 'index']);
   Route::get('/checkout', CheckoutController::class);
-  Route::resource('/post', PostController::class)->only(['index', 'show', 'store', 'update', 'destroy']);
+  Route::resource('/post', PostController::class)->only(['index', 'show', 'store', 'update', 'destroy'])->parameters([
+    'post'    => 'admin_post',
+    'comment' => 'admin_comment'
+  ]);
 });

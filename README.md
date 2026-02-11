@@ -339,7 +339,16 @@ Route::resources([
 ]);
 ```
 
-**Atenção**: Para rotas de apis usamos os métodos `apiResource` e `apiResources`
+**Atenção**: Para rotas de apis usamos os métodos `apiResource` e `apiResources`, pois as rotas da api não usam `create` nem `edit`
+
+***Como personalizar os parametros de resources***: Para personalizar os parametros de resources usamos o método `->parameters([])` e seu parametro espera um array onde o `index` é o parametro atual e o `valor` o novo parametro
+
+```php
+Route::resource('/post.comment', PostController::class)->parameters([
+  'post'    => 'admin_post',
+  'comment' => 'admin_comment'
+]);
+```
 
 ## Comandos artisan
 
