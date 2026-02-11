@@ -229,7 +229,7 @@ Route::group([], function () {
 
 ```
 
-**Exemplo de controller Single Action**: Os controllers que possuem somente uma ação podem usar o método `__invoke` e passar somente a classe no segundo parametro da rota, o laravel é inteligente o bastante para usar esse método para essa rota, isso não impede a classe de ter vários métodos, mas o ideal é usar eles dentro do `__invoke`
+***Exemplo de controller Single Action***: Os controllers que possuem somente uma ação podem usar o método `__invoke` e passar somente a classe no segundo parametro da rota, o laravel é inteligente o bastante para usar esse método para essa rota, isso não impede a classe de ter vários métodos, mas o ideal é usar eles dentro do `__invoke`
 
 ```php
 
@@ -254,10 +254,81 @@ class CheckoutController extends Controller
 
 ```
 
+***Como criar controllers resources***: Controllers resources são classes criadas pelo artisan que já vem com os métodos específicos de cada item do CRUD, por exemplo `index`, `show`, `update`... e também podemos usar um método da classe `Route` para criar automaticamente todas as rotas.
+
+| Método HTTP | URI               | Nome da rota | Controller → Método        |
+| ----------- | ----------------- | ------------ | -------------------------- |
+| GET / HEAD  | /post             | post.index   | PostController - `index`   |
+| POST        | /post             | post.store   | PostController - `store`   |
+| GET / HEAD  | /post/create      | post.create  | PostController - `create`  |
+| GET / HEAD  | /post/{post}      | post.show    | PostController - `show`    |
+| PUT / PATCH | /post/{post}      | post.update  | PostController - `update`  |
+| DELETE      | /post/{post}      | post.destroy | PostController - `destroy` |
+| GET / HEAD  | /post/{post}/edit | post.edit    | PostController - `edit`    |
+
+
+
+```php
+// rota
+Route::resource('/post', PostController::class);
+```
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\User;
+use Illuminate\Http\Request;
+
+class PostController extends Controller
+{
+  public function index()
+  {
+    dd('index');
+  }
+
+  public function create()
+  {
+    //
+  }
+
+  public function store(Request $request)
+  {
+    //
+  }
+
+  public function show(User $user)
+  {
+    //
+  }
+
+  public function edit(User $user)
+  {
+    //
+  }
+
+  public function update(Request $request, User $user)
+  {
+    //
+  }
+
+  public function destroy(User $user)
+  {
+    //
+  }
+}
+
+```
+
 ## Comandos artisan
 
-| Comando | O que faz | Pasta |
-|---------|----------|----------|
-| php artisan make:middleware NomeMiddleware | cria um arquivo de middleware | app/Http/Middleware  |
-| php artisan make:controller NomeController | Criar um arquivo de controller | app/Http/Controllers |
+| Comando | O que faz | Pasta | informações adicionais |
+|---------|----------|----------| ---------------------|
+| php artisan make:middleware NomeMiddleware | cria um arquivo de middleware | app/Http/Middleware  | - |
+| php artisan make:controller NomeController | Criar um arquivo de controller | app/Http/Controllers | - |
+| php artisan make:controller NomeController --invokable | Criar um arquivo de controller com o método __invoke | app/Http/Controllers | - |
+| php artisan make:controller NomeController --resource | Criar um arquivo de controller com todos os métodos padrões de CRUD index, show, update... | app/Http/Controllers | - |
+| php artisan make:controller NomeController --resource --model=user | Criar um arquivo de controller com todos os métodos padrões de CRUD e injeta o model nas dependências dos métodos | app/Http/Controllers | Caso não existe o model o laravel vai iniciar perguntar no terminal para criar o model |
+| php artisan route:list | Lista todas as rotas do projeto | - | - |
 
