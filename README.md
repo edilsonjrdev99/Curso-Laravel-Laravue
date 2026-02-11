@@ -321,6 +321,26 @@ class PostController extends Controller
 
 ```
 
+***Como personalizar as rotas do resources***: Para personalizar as rotas do resources usamos o método `->only()`, podemos passar uma string de uma rota ou um array de rotas, essas strings são os nomes dos métodos, exemplos `index`, `show`, `destroy`. Para ao remover rotas ao usamos `->except()` e passamos as rotas que não queremos usar
+
+```php
+// Rotas usadas
+Route::resource('/post', PostController::class)->only(['index', 'show', 'store', 'update', 'destroy']);
+
+// Rotas não usadas
+Route::resource('/post', PostController::class)->except(['index', 'show', 'store', 'update', 'destroy']);
+```
+
+***Múltiplos de resources***: Para criar grupos de resources usamos o método `->resources([])` e passamos os arrays de Controllers no parametro onde o `index` é o resource da rota e o `valor` é o Controller, o único problema é que não podemos usar os métodos `->only` e `->except()`
+
+```php
+Route::resources([
+  'post' => PostController::class
+]);
+```
+
+**Atenção**: Para rotas de apis usamos os métodos `apiResource` e `apiResources`
+
 ## Comandos artisan
 
 | Comando | O que faz | Pasta | informações adicionais |
