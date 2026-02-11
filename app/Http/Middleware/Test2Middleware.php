@@ -10,7 +10,7 @@ class Test2Middleware
 {
   public function handle(Request $request, Closure $next): Response
   {
-    dd('caiu no segundo middleware');
+    echo 'caiu no segundo middleware';
 
     return $next($request);
   }

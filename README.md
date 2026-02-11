@@ -2,7 +2,7 @@
 
 ## Middleware
 
-Middleware ...
+Middlewares são camadas executadas antes do controller, são usadas para verificar ou validar algo no começo da execução do fluxo.
 
 ***Padrão***: É uma classe normal com o método handle, esse método é a execução do middleware, ele possui dois parametros, Request $request com os dados da request e Closure #next uma variável utilizada para informar que ele pode seguir para os próximos arquivos da execução do código
 
@@ -175,7 +175,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
 ***Como definir middlewares globais para camadas de rotas***
 
-Para definir middlewares globais para camadas de rotas podemos usar, rotas web `->web()` ou para rotas api `->api()`, o primeiro parâmetro são os primeiros middlewares e é um array de middlewares que vão ser adicionados no final da pilha, o segundo parametro são os middlewares que vão para o começo a pilha, ou seja vão ser executados depois dos middlewares do primeiro parametro, porque na pilha, os últimos são os primeiros a sair
+Para definir middlewares globais para camadas de rotas podemos usar, rotas web `->web()` ou para rotas api `->api()`, o primeiro parâmetro são os últimos middlewares que serão executados e é um array de middlewares, o segundo parametro são os middlewares que vão ser executados primeiro.
 
 ```php
 <?php
@@ -209,9 +209,55 @@ return Application::configure(basePath: dirname(__DIR__))
   })->create();
 ```
 
+## Controllers
+
+Controller são classes que são vinculadas a uma rota, elas são utilizadas para receber a request e orquestrar esses dados para serem validados `formRequest`, processados por alguma regra de negócio `Model, Services` e retornar a response `view ou JSON`.
+Os Controllers são chamados no segundo parametro dos métodos de `métodos Http` das rotas `Route::get('/', [UserController::class, 'metodo'])`.
+
+**Atenção**: Existem casos em que não será necessário passar o método no segundo index do array do segundo parâmetro da rota, isso é usado para `Controllers Single Action`
+
+```php
+<?php
+
+use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Route;
+
+Route::group([], function () {
+  // Primeiro parâmetro é a classe controller, segundo é o seu método
+  Route::get('/', [UserController::class, 'index']);
+});
+
+```
+
+**Exemplo de controller Single Action**: Os controllers que possuem somente uma ação podem usar o método `__invoke` e passar somente a classe no segundo parametro da rota, o laravel é inteligente o bastante para usar esse método para essa rota, isso não impede a classe de ter vários métodos, mas o ideal é usar eles dentro do `__invoke`
+
+```php
+
+// Rota
+Route::get('/checkout', CheckoutController::class);
+```
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+
+class CheckoutController extends Controller
+{
+  public function __invoke(Request $request)
+  {
+    dd('checkout');
+  }
+}
+
+```
+
 ## Comandos artisan
 
 | Comando | O que faz | Pasta |
 |---------|----------|----------|
 | php artisan make:middleware NomeMiddleware | cria um arquivo de middleware | app/Http/Middleware  |
+| php artisan make:controller NomeController | Criar um arquivo de controller | app/Http/Controllers |
 

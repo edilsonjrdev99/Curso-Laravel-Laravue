@@ -17,10 +17,10 @@ return Application::configure(basePath: dirname(__DIR__))
   ->withMiddleware(function (Middleware $middleware): void {
     $middleware->web(
       [
-        TestMiddleware::class
+        Test2Middleware::class
       ],
       [
-        Test2Middleware::class
+        TestMiddleware::class
       ]
     );
   })
